@@ -16,7 +16,7 @@ class ProductsOverviewScreen extends StatelessWidget {
           notification.disallowIndicator();
           return true;
         },
-        child: ProductsGrid(),
+        child: const ProductsGrid(),
       ),
     );
   }
