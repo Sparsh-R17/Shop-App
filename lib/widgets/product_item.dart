@@ -17,7 +17,8 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context);
+    final product = Provider.of<Product>(context, listen: false);
+    print('Checking whether provider is working or not');
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GestureDetector(
@@ -30,14 +31,17 @@ class ProductItem extends StatelessWidget {
         child: GridTile(
           footer: GridTileBar(
             backgroundColor: Colors.black87,
-            leading: IconButton(
-              icon: product.isFavorite
-                  ? const Icon(Icons.favorite)
-                  : const Icon(Icons.favorite_border),
-              color: Theme.of(context).colorScheme.secondary,
-              onPressed: () {
-                product.toggleFavorite();
-              },
+            leading: Consumer<Product>(
+              //^ Child is the widget that never changes value after building also
+              builder: (context, value, child) => IconButton(
+                icon: value.isFavorite
+                    ? const Icon(Icons.favorite)
+                    : const Icon(Icons.favorite_border),
+                color: Colors.deepOrange,
+                onPressed: () {
+                  value.toggleFavorite();
+                },
+              ),
             ),
             title: Text(
               product.title,

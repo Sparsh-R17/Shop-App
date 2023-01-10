@@ -38,13 +38,28 @@ class ProductProvider with ChangeNotifier {
     ),
   ];
 
+  var _showFavorites = false;
+
   List<Product> get items {
     //this lines gives a copy of _items to items using getter function
+    if (_showFavorites) {
+      return _items.where((element) => element.isFavorite).toList();
+    }
     return [..._items];
   }
 
   Product findbyId(String id) {
     return _items.firstWhere((element) => element.id == id);
+  }
+
+  void showFavoritesOnly() {
+    _showFavorites = true;
+    notifyListeners();
+  }
+
+  void showAll() {
+    _showFavorites = false;
+    notifyListeners();
   }
 
   void addProduct() {
