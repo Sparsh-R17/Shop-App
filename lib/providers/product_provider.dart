@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/widgets/product_item.dart';
 
 import '../models/product.dart';
 
@@ -38,29 +39,35 @@ class ProductProvider with ChangeNotifier {
     ),
   ];
 
-  var _showFavorites = false;
+  // var _showFavorites = false;
 
   List<Product> get items {
     //this lines gives a copy of _items to items using getter function
-    if (_showFavorites) {
-      return _items.where((element) => element.isFavorite).toList();
-    }
+    // if (_showFavorites) {
+    //   return _items.where((prodItem) => prodItem.isFavorite).toList();
+    // }
     return [..._items];
   }
 
+  List<Product> get favoriteItems{
+    return _items.where((prodItem) => prodItem.isFavorite).toList();
+  }
+
   Product findbyId(String id) {
-    return _items.firstWhere((element) => element.id == id);
+    return _items.firstWhere(
+      (prodItem) => prodItem.id == id,
+    );
   }
 
-  void showFavoritesOnly() {
-    _showFavorites = true;
-    notifyListeners();
-  }
+  // void showFavoritesOnly() {
+  //   _showFavorites = true;
+  //   notifyListeners();
+  // }
 
-  void showAll() {
-    _showFavorites = false;
-    notifyListeners();
-  }
+  // void showAll() {
+  //   _showFavorites = false;
+  //   notifyListeners();
+  // }
 
   void addProduct() {
     // _items.add(value);

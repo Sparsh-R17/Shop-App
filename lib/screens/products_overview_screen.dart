@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:shop_app/providers/product_provider.dart';
 
 import '../widgets/products_grid.dart';
 
@@ -9,12 +7,19 @@ enum FilterOptions {
   all,
 }
 
-class ProductsOverviewScreen extends StatelessWidget {
+class ProductsOverviewScreen extends StatefulWidget {
   const ProductsOverviewScreen({super.key});
 
   @override
+  State<ProductsOverviewScreen> createState() => _ProductsOverviewScreenState();
+}
+
+class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
+  var _showOnlyFavorites = false;
+
+  @override
   Widget build(BuildContext context) {
-    final productsContainer = Provider.of<ProductProvider>(context);
+    // final productsContainer = Provider.of<ProductProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Shop'),
@@ -22,11 +27,15 @@ class ProductsOverviewScreen extends StatelessWidget {
           PopupMenuButton(
             onSelected: (value) {
               print(value);
-              if (value == FilterOptions.favorites) {
-                productsContainer.showFavoritesOnly();
-              } else {
-                productsContainer.showAll();
-              }
+              setState(() {
+                if (value == FilterOptions.favorites) {
+                  _showOnlyFavorites = true;
+                  // productsContainer.showFavoritesOnly();
+                } else {
+                  _showOnlyFavorites = false;
+                  // productsContainer.showAll();
+                }
+              });
             },
             icon: const Icon(Icons.more_vert_rounded),
             itemBuilder: (_) => const [
@@ -47,7 +56,7 @@ class ProductsOverviewScreen extends StatelessWidget {
           notification.disallowIndicator();
           return true;
         },
-        child: const ProductsGrid(),
+        child: ProductsGrid(showFavs: _showOnlyFavorites),
       ),
     );
   }
