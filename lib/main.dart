@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
+import 'config/colors.dart';
 import '/screens/products_overview_screen.dart';
 import './screens/product_detail_screen.dart';
 import './providers/product_provider.dart';
@@ -31,8 +32,8 @@ class MyApp extends StatelessWidget {
             Theme.of(context).textTheme,
           ),
           colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.purple,
-            secondary: Colors.deepOrange,
+            seedColor: AppColor.purple,
+            secondary: AppColor.peach,
           ),
         ),
         home: const ProductsOverviewScreen(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../config/colors.dart';
 import '/screens/product_detail_screen.dart';
 import '../models/product.dart';
 
@@ -37,7 +38,7 @@ class ProductItem extends StatelessWidget {
                 icon: value.isFavorite
                     ? const Icon(Icons.favorite)
                     : const Icon(Icons.favorite_border),
-                color: Colors.deepOrange,
+                color: AppColor.peach,
                 onPressed: () {
                   value.toggleFavorite();
                 },
