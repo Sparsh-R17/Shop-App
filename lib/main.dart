@@ -9,6 +9,7 @@ import '/screens/products_overview_screen.dart';
 import './screens/product_detail_screen.dart';
 import './providers/product_provider.dart';
 import './providers/cart_provider.dart';
+import 'screens/cart_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
         home: const ProductsOverviewScreen(),
         routes: {
           ProductDetailScreen.routeName: (ctx) => const ProductDetailScreen(),
+          CartScreen.routeName: (ctx) => const CartScreen(),
         },
       ),
     );

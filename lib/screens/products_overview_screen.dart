@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/cart_provider.dart';
 import '../widgets/products_grid.dart';
+import 'cart_screen.dart';
 
 enum FilterOptions {
   favorites,
@@ -56,11 +57,16 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.only(right: 20.0, top: 1),
-                  child: Badge(
-                    label: Text(value.itemCount().toString()),
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    isLabelVisible: true,
-                    child: const Icon(Icons.shopping_cart),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(CartScreen.routeName);
+                    },
+                    child: Badge(
+                      label: Text(value.itemCount.toString()),
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                      isLabelVisible: true,
+                      child: const Icon(Icons.shopping_cart),
+                    ),
                   ),
                 ),
               );
