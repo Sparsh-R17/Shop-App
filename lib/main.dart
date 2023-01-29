@@ -8,6 +8,7 @@ import 'config/colors.dart';
 import '/screens/products_overview_screen.dart';
 import './screens/product_detail_screen.dart';
 import './providers/product_provider.dart';
+import './providers/cart_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,8 +24,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ProductProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (ctx) => ProductProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (ctx) => Cart(),
+        ),
+      ],
       child: MaterialApp(
         title: 'MyShop',
         theme: ThemeData(

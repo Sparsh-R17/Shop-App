@@ -42,10 +42,10 @@ class ProductProvider with ChangeNotifier {
   // var _showFavorites = false;
 
   List<Product> get items {
-    //this lines gives a copy of _items to items using getter function
     // if (_showFavorites) {
     //   return _items.where((prodItem) => prodItem.isFavorite).toList();
     // }
+    //&this lines gives a copy of _items to items using getter function
     return [..._items];
   }
 
