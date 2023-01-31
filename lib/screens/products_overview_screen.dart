@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/cart_provider.dart';
-import '../widgets/products_grid.dart';
 import 'cart_screen.dart';
+
+import '../widgets/custom_drawer.dart';
+import '../widgets/products_grid.dart';
+
+import '../providers/cart_provider.dart';
 
 enum FilterOptions {
   favorites,
@@ -24,12 +27,12 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   Widget build(BuildContext context) {
     // final productsContainer = Provider.of<ProductProvider>(context);
     return Scaffold(
+      drawer: const CustomDrawer(),
       appBar: AppBar(
         title: const Text('My Shop'),
         actions: [
           PopupMenuButton(
             onSelected: (value) {
-              print(value);
               setState(() {
                 if (value == FilterOptions.favorites) {
                   _showOnlyFavorites = true;
