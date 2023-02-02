@@ -80,4 +80,10 @@ class ProductProvider with ChangeNotifier {
     //& Notify listeners tell the widgets using this class that there is a change in the list _items
     notifyListeners();
   }
+
+  void updateProduct(String id, Product product) {
+    final prodIndex = _items.indexWhere((element) => element.id == id);
+    _items[prodIndex] = product;
+    notifyListeners();
+  }
 }
