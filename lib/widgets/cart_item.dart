@@ -26,6 +26,25 @@ class CartItemTile extends StatelessWidget {
       onDismissed: (direction) {
         Provider.of<Cart>(context, listen: false).removeItem(productId);
       },
+      confirmDismiss: (direction) {
+        return showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                  title: const Text('Are you sure ?'),
+                  content: const Text(
+                      'Do you want to remove the item from the cart ?'),
+                  actions: [
+                    TextButton(
+                      child: const Text('NO'),
+                      onPressed: () => Navigator.pop(context, false),
+                    ),
+                    TextButton(
+                      child: const Text('YES'),
+                      onPressed: () => Navigator.pop(context, true),
+                    ),
+                  ],
+                ));
+      },
       background: Container(
         color: Theme.of(context).colorScheme.secondary,
         alignment: Alignment.centerRight,
