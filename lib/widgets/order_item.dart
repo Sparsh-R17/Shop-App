@@ -56,7 +56,7 @@ class _OrderItemState extends State<OrderItem> {
                           Text(
                             prod.title,
                             style: const TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
