@@ -19,7 +19,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _imageUrlFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
   var _editedProduct = Product(
-    id: 'null',
+    id: '',
     description: '',
     imageUrl: '',
     price: 0,
@@ -42,14 +42,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
   //^ to load the data for editing product
   @override
   void didChangeDependencies() {
+    
     //^ condt. for loading 1st time and doesn't run after once
     if (_isInit) {
-      final productId = ModalRoute.of(context)!.settings.arguments as String;
-      print(productId);
-      if (productId != 'null') {
+      
+      //& Since the add button doesn't have any id so it gives null so we can't 
+      //& typecast it at modal route line
+      final productId = ModalRoute.of(context)!.settings.arguments;
+      
+      if (productId != null) {
         //^ find product by id and change the _editedProduct details
         _editedProduct = Provider.of<ProductProvider>(context, listen: false)
-            .findbyId(productId);
+            .findbyId(productId as String);
 
         _initValues = {
           'title': _editedProduct.title,
@@ -87,7 +91,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
     _formKey.currentState!.save();
     //& this block runs when we click the edit button not the add button
-    if (_editedProduct.id != 'null') {
+    if (_editedProduct.id != '') {
       Provider.of<ProductProvider>(context, listen: false).updateProduct(
         _editedProduct.id,
         _editedProduct,

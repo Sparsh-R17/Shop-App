@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import '../models/product.dart';
 
@@ -69,16 +72,37 @@ class ProductProvider with ChangeNotifier {
   // }
 
   void addProduct(Product product) {
-    final newProduct = Product(
-      id: DateTime.now().toString(),
-      title: product.title,
-      description: product.description,
-      price: product.price,
-      imageUrl: product.imageUrl,
-    );
-    _items.add(newProduct);
-    //& Notify listeners tell the widgets using this class that there is a change in the list _items
-    notifyListeners();
+    // 2nd method
+    // Uri.https('shop-app-d57ee-default-rtdb.asia-southeast1.firebasedatabase.app','/products.json');
+
+    final url = Uri.parse(
+        'https://shop-app-d57ee-default-rtdb.asia-southeast1.firebasedatabase.app/products.json');
+
+    http
+        .post(
+      url,
+      body: json.encode(
+        {
+          'title': product.title,
+          'price': product.price,
+          'description': product.description,
+          'isFavorite': product.isFavorite,
+          'imageUrl': product.imageUrl,
+        },
+      ),
+    )
+        .then((value) {
+      final newProduct = Product(
+        id: json.decode(value.body)['name'],
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        imageUrl: product.imageUrl,
+      );
+      _items.add(newProduct);
+      //& Notify listeners tell the widgets using this class that there is a change in the list _items
+      notifyListeners();
+    });
   }
 
   void updateProduct(String id, Product product) {
