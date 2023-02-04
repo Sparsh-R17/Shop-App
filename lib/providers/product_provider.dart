@@ -71,14 +71,14 @@ class ProductProvider with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void addProduct(Product product) {
-    // 2nd method
-    // Uri.https('shop-app-d57ee-default-rtdb.asia-southeast1.firebasedatabase.app','/products.json');
-
+  Future<void> addProduct(Product product) {
     final url = Uri.parse(
         'https://shop-app-d57ee-default-rtdb.asia-southeast1.firebasedatabase.app/products.json');
 
-    http
+    // 2nd method
+    // Uri.https('shop-app-d57ee-default-rtdb.asia-southeast1.firebasedatabase.app','/products.json');
+
+    return http
         .post(
       url,
       body: json.encode(
@@ -102,6 +102,9 @@ class ProductProvider with ChangeNotifier {
       _items.add(newProduct);
       //& Notify listeners tell the widgets using this class that there is a change in the list _items
       notifyListeners();
+    }).catchError((error) {
+      print(error);
+      throw error;
     });
   }
 
