@@ -7,6 +7,7 @@ import '../widgets/custom_drawer.dart';
 import '../widgets/products_grid.dart';
 
 import '../providers/cart_provider.dart';
+import '../providers/product_provider.dart';
 
 enum FilterOptions {
   favorites,
@@ -22,6 +23,39 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _showOnlyFavorites = false;
+  var _isLoading = false;
+  // var _isInit = true;
+
+  @override
+  void initState() {
+    // without listen = false u cant use provider in initState
+    setState(() {
+      _isLoading = true;
+    });
+    Provider.of<ProductProvider>(context, listen: false)
+        .fetAndSetProducts()
+        .then((_) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+
+    //& if listen = true and want to call provider use future.delay
+    //& its acts as a todo this line is executed once we the widget is initialized
+    // Future.delayed(Duration.zero)
+    //     .then((_) => Provider.of<ProductProvider>(context));
+    super.initState();
+  }
+
+  //^ we can use this method if we want listen = true;
+  // @override
+  // void didChangeDependencies() {
+  //   if (_isInit) {
+  //     Provider.of<ProductProvider>(context).fetAndSetProducts();
+  //   }
+  //   _isInit = false;
+  //   super.didChangeDependencies();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -78,11 +112,33 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         ],
       ),
       body: NotificationListener<OverscrollIndicatorNotification>(
-        onNotification: (notification) {
-          notification.disallowIndicator();
-          return true;
-        },
-        child: ProductsGrid(showFavs: _showOnlyFavorites),
+          onNotification: (notification) {
+            notification.disallowIndicator();
+            return true;
+          },
+          child: _isLoading
+              ? loadingIndicator(context)
+              : ProductsGrid(showFavs: _showOnlyFavorites)),
+    );
+  }
+
+  Widget loadingIndicator(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text(
+            'Please Wait ...',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.02,
+          ),
+          const CircularProgressIndicator(),
+        ],
       ),
     );
   }
