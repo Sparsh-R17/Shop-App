@@ -12,6 +12,11 @@ class UserProductScreen extends StatelessWidget {
   static const routeName = '/user-product-screen';
   const UserProductScreen({super.key});
 
+  Future<void> _refreshProduct(BuildContext context) async {
+    await Provider.of<ProductProvider>(context, listen: false)
+        .fetAndSetProducts();
+  }
+
   @override
   Widget build(BuildContext context) {
     final productsData = Provider.of<ProductProvider>(context);
@@ -21,30 +26,32 @@ class UserProductScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.of(context)
-                  .pushNamed(EditProductScreen.routeName);
+              Navigator.of(context).pushNamed(EditProductScreen.routeName);
             },
             icon: const Icon(Icons.add),
           ),
         ],
       ),
       drawer: const CustomDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(8),
-        child: ListView.builder(
-          itemCount: productsData.items.length,
-          itemBuilder: (context, index) {
-            return Column(
-              children: [
-                UserProductItem(
-                  title: productsData.items[index].title,
-                  imgUrl: productsData.items[index].imageUrl,
-                  id: productsData.items[index].id,
-                ),
-                const Divider(),
-              ],
-            );
-          },
+      body: RefreshIndicator(
+        onRefresh: () => _refreshProduct(context),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: ListView.builder(
+            itemCount: productsData.items.length,
+            itemBuilder: (context, index) {
+              return Column(
+                children: [
+                  UserProductItem(
+                    title: productsData.items[index].title,
+                    imgUrl: productsData.items[index].imageUrl,
+                    id: productsData.items[index].id,
+                  ),
+                  const Divider(),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

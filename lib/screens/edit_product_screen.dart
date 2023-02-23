@@ -97,14 +97,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
     //& this block runs when we click the edit button not the add button
     if (_editedProduct.id != '') {
-      Provider.of<ProductProvider>(context, listen: false).updateProduct(
+      await Provider.of<ProductProvider>(context, listen: false).updateProduct(
         _editedProduct.id,
         _editedProduct,
       );
-      setState(() {
-        loadingIndicator = false;
-      });
-      Navigator.of(context).pop();
     } else {
       try {
         await Provider.of<ProductProvider>(context, listen: false)
@@ -126,13 +122,19 @@ class _EditProductScreenState extends State<EditProductScreen> {
             ],
           ),
         );
-      } finally {
-        setState(() {
-          loadingIndicator = false;
-        });
-        Navigator.of(context).pop();
       }
+      //  finally {
+      //   setState(() {
+      //     loadingIndicator = false;
+      //   });
+      //   Navigator.of(context).pop();
+      // }
     }
+    setState(() {
+      loadingIndicator = false;
+    });
+
+    Navigator.of(context).pop();
   }
 
   //To dispose the memory node is having once user leaves this state/page

@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/http_exception.dart';
+
 import '../models/product.dart';
 
 class ProductProvider with ChangeNotifier {
@@ -133,14 +135,41 @@ class ProductProvider with ChangeNotifier {
     }
   }
 
-  void updateProduct(String id, Product product) {
+  Future<void> updateProduct(String id, Product product) async {
     final prodIndex = _items.indexWhere((element) => element.id == id);
-    _items[prodIndex] = product;
-    notifyListeners();
+    if (prodIndex >= 0) {
+      final url = Uri.parse(
+          'https://shop-app-d57ee-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json');
+      await http.patch(url,
+          body: json.encode({
+            'description': product.description,
+            'imageUrl': product.imageUrl,
+            'price': product.price,
+            'title': product.title,
+          }));
+      _items[prodIndex] = product;
+      notifyListeners();
+    } else {
+      print('Index error while updating, index found - $prodIndex');
+    }
   }
 
-  void deleteProduct(String id) {
-    _items.removeWhere((element) => element.id == id);
+  Future<void> deleteProduct(String id) async {
+    final url = Uri.parse(
+        'https://shop-app-d57ee-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id');
+    final existingProductIndex =
+        _items.indexWhere((element) => element.id == id);
+    Product? existingProduct = _items[existingProductIndex];
+    _items.removeAt(existingProductIndex);
     notifyListeners();
+    final response = await http.delete(url);
+    print(response.statusCode);
+    if (response.statusCode >= 400) {
+      _items.insert(existingProductIndex, existingProduct);
+      notifyListeners();
+
+      throw HttpException('Could not delete product.');
+    }
+    existingProduct = null;
   }
 }
