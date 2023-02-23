@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,16 +46,7 @@ class CartScreen extends StatelessWidget {
                       );
                     },
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Provider.of<Order>(context, listen: false).addOrder(
-                        cart.items.values.toList(),
-                        cart.totalAmount,
-                      );
-                      cart.clearItems();
-                    },
-                    child: const Text('ORDER NOW'),
-                  ),
+                  OrderButton(cart: cart),
                 ],
               ),
             ),
@@ -79,5 +71,44 @@ class CartScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  const OrderButton({
+    Key? key,
+    required this.cart,
+  }) : super(key: key);
+
+  final Cart cart;
+
+  @override
+  State<OrderButton> createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  bool _isLoading = false;
+  @override
+  Widget build(BuildContext context) {
+    return _isLoading
+        ? const CircularProgressIndicator()
+        : TextButton(
+            onPressed: (widget.cart.totalAmount <= 0) || _isLoading
+                ? null
+                : () async {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    await Provider.of<Order>(context, listen: false).addOrder(
+                      widget.cart.items.values.toList(),
+                      widget.cart.totalAmount,
+                    );
+                    setState(() {
+                      _isLoading = false;
+                    });
+                    widget.cart.clearItems();
+                  },
+            child: const Text('ORDER NOW'),
+          );
   }
 }

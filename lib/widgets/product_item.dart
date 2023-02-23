@@ -21,7 +21,8 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
-    print('Checking whether provider is working or not');
+    final scaffold = ScaffoldMessenger.of(context);
+    // print('Checking whether provider is working or not');
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GestureDetector(
@@ -41,8 +42,17 @@ class ProductItem extends StatelessWidget {
                     ? const Icon(Icons.favorite)
                     : const Icon(Icons.favorite_border),
                 color: AppColor.peach,
-                onPressed: () {
-                  value.toggleFavorite();
+                onPressed: () async {
+                  try {
+                    await value.toggleFavorite();
+                  } catch (error) {
+                    print(error);
+                    scaffold.showSnackBar(
+                      const SnackBar(
+                        content: Text('Error in changing Fav. Status'),
+                      ),
+                    );
+                  }
                 },
               ),
             ),
