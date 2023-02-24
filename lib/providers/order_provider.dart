@@ -17,7 +17,7 @@ class Order with ChangeNotifier {
     final url = Uri.parse(
         'https://shop-app-d57ee-default-rtdb.asia-southeast1.firebasedatabase.app/orders.json');
     final response = await http.get(url);
-    print(response.body);
+    // print(response.body);
     List<OrderItem> loadedOrders = [];
     final extractedData = json.decode(response.body) as Map<String, dynamic>;
     // ignore: unnecessary_null_comparison

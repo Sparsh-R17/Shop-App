@@ -6,40 +6,22 @@ import '../widgets/order_item.dart';
 
 import '../providers/order_provider.dart' show Order;
 
-class OrdersScreen extends StatefulWidget {
+class OrdersScreen extends StatelessWidget {
   static const routeName = '/orders';
   const OrdersScreen({super.key});
 
   @override
-  State<OrdersScreen> createState() => _OrdersScreenState();
-}
-
-class _OrdersScreenState extends State<OrdersScreen> {
-  bool _isLoading = false;
-
-  @override
-  void initState() {
-    setState(() {
-      _isLoading = true;
-    });
-    Provider.of<Order>(context, listen: false).fetchOrders().then((_) {
-      setState(() {
-        _isLoading = false;
-      });
-    });
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final orderData = Provider.of<Order>(context);
     return Scaffold(
       drawer: const CustomDrawer(),
       appBar: AppBar(
         title: const Text('Your Orders'),
       ),
-      body: _isLoading
-          ? Center(
+      body: FutureBuilder(
+        future: Provider.of<Order>(context, listen: false).fetchOrders(),
+        builder: (ctx, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -55,15 +37,31 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   const CircularProgressIndicator(),
                 ],
               ),
-            )
-          : ListView.builder(
-              itemCount: orderData.orders.length,
-              itemBuilder: (context, index) {
-                return OrderItem(
-                  order: orderData.orders[index],
-                );
-              },
-            ),
+            );
+          } else {
+            if (snapshot.hasError) {
+              return const Center(
+                child: Text(
+                  'An Error Occurred',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              );
+            } else {
+              return Consumer<Order>(
+                  builder: (ctx, orderData, child) => ListView.builder(
+                        itemCount: orderData.orders.length,
+                        itemBuilder: (context, index) {
+                          return OrderItem(
+                            order: orderData.orders[index],
+                          );
+                        },
+                      ));
+            }
+          }
+        },
+      ),
     );
   }
 }
