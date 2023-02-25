@@ -16,6 +16,7 @@ import './screens/edit_product_screen.dart';
 import './providers/product_provider.dart';
 import './providers/cart_provider.dart';
 import 'providers/order_provider.dart';
+import 'screens/auth_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,8 +55,10 @@ class MyApp extends StatelessWidget {
             secondary: AppColor.peach,
           ),
         ),
-        home: const ProductsOverviewScreen(),
+        // home: const ProductsOverviewScreen(),
+        home: const AuthScreen(),
         routes: {
+          AuthScreen.routeName: (ctx) => const AuthScreen(),
           ProductDetailScreen.routeName: (ctx) => const ProductDetailScreen(),
           CartScreen.routeName: (ctx) => const CartScreen(),
           OrdersScreen.routeName: (ctx) => const OrdersScreen(),

@@ -133,7 +133,7 @@ class ProductProvider with ChangeNotifier {
       //& Notify listeners tell the widgets using this class that there is a change in the list _items
       notifyListeners();
     } catch (error) {
-      print('this was my error');
+      // print('this was my error');
       rethrow;
     }
   }
@@ -153,7 +153,7 @@ class ProductProvider with ChangeNotifier {
       _items[prodIndex] = product;
       notifyListeners();
     } else {
-      print('Index error while updating, index found - $prodIndex');
+      // print('Index error while updating, index found - $prodIndex');
     }
   }
 
@@ -166,7 +166,7 @@ class ProductProvider with ChangeNotifier {
     _items.removeAt(existingProductIndex);
     notifyListeners();
     final response = await http.delete(url);
-    print(response.statusCode);
+    // print(response.statusCode);
     if (response.statusCode >= 400) {
       _items.insert(existingProductIndex, existingProduct);
       notifyListeners();
