@@ -13,12 +13,17 @@ class Order with ChangeNotifier {
     return [..._orders];
   }
 
+  final String authToken;
+
+  Order(this.authToken, this._orders);
+
   Future<void> fetchOrders() async {
     final url = Uri.parse(
-        'https://shop-app-d57ee-default-rtdb.asia-southeast1.firebasedatabase.app/orders.json');
+        'https://shop-app-d57ee-default-rtdb.asia-southeast1.firebasedatabase.app/orders.json?auth=$authToken');
     final response = await http.get(url);
-    // print(response.body);
+    print(response.body);
     List<OrderItem> loadedOrders = [];
+
     final extractedData = json.decode(response.body) as Map<String, dynamic>;
     // ignore: unnecessary_null_comparison
     if (extractedData == null) {
@@ -45,13 +50,14 @@ class Order with ChangeNotifier {
         ),
       );
     });
+
     _orders = loadedOrders.reversed.toList();
     notifyListeners();
   }
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
     final url = Uri.parse(
-        'https://shop-app-d57ee-default-rtdb.asia-southeast1.firebasedatabase.app/orders.json');
+        'https://shop-app-d57ee-default-rtdb.asia-southeast1.firebasedatabase.app/orders.json?auth=$authToken');
     final timeStamp = DateTime.now();
 
     final response = await http.post(url,

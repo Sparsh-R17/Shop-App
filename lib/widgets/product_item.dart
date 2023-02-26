@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/providers/auth.dart';
 
 import '../config/colors.dart';
 import '/screens/product_detail_screen.dart';
@@ -22,6 +23,7 @@ class ProductItem extends StatelessWidget {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
     final scaffold = ScaffoldMessenger.of(context);
+    final authData = Provider.of<Auth>(context, listen: false);
     // print('Checking whether provider is working or not');
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
@@ -44,7 +46,7 @@ class ProductItem extends StatelessWidget {
                 color: AppColor.peach,
                 onPressed: () async {
                   try {
-                    await value.toggleFavorite();
+                    await value.toggleFavorite(authData.token!);
                   } catch (error) {
                     print(error);
                     scaffold.showSnackBar(

@@ -38,36 +38,52 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (ctx) => Auth(),
         ),
-        ChangeNotifierProvider(
-          create: (ctx) => ProductProvider(),
+        ChangeNotifierProxyProvider<Auth, ProductProvider>(
+          create: (context) => ProductProvider('', []),
+          update: (context, auth, previousNotifier) => ProductProvider(
+            auth.token!,
+            previousNotifier == null ? [] : previousNotifier.items,
+          ),
         ),
         ChangeNotifierProvider(
           create: (ctx) => Cart(),
         ),
-        ChangeNotifierProvider(
-          create: (ctx) => Order(),
-        ),
+        ChangeNotifierProxyProvider<Auth, Order>(
+          create: (context) => Order('', []),
+          update: (context, auth, previousNotifier) => Order(
+            auth.token!,
+            previousNotifier == null ? [] : previousNotifier.orders,
+            // previousNotifier!.orders,
+          ),
+        )
       ],
-      child: MaterialApp(
-        title: 'MyShop',
-        theme: ThemeData(
-          textTheme: GoogleFonts.latoTextTheme(
-            Theme.of(context).textTheme,
-          ),
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: AppColor.purple,
-            secondary: AppColor.peach,
-          ),
-        ),
-        // home: const ProductsOverviewScreen(),
-        home: const AuthScreen(),
-        routes: {
-          AuthScreen.routeName: (ctx) => const AuthScreen(),
-          ProductDetailScreen.routeName: (ctx) => const ProductDetailScreen(),
-          CartScreen.routeName: (ctx) => const CartScreen(),
-          OrdersScreen.routeName: (ctx) => const OrdersScreen(),
-          UserProductScreen.routeName: (ctx) => const UserProductScreen(),
-          EditProductScreen.routeName: (ctx) => const EditProductScreen(),
+      child: Consumer<Auth>(
+        builder: (context, authObj, child) {
+          return MaterialApp(
+            title: 'MyShop',
+            theme: ThemeData(
+              textTheme: GoogleFonts.latoTextTheme(
+                Theme.of(context).textTheme,
+              ),
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: AppColor.purple,
+                secondary: AppColor.peach,
+              ),
+            ),
+            // home: const ProductsOverviewScreen(),
+            home: authObj.isAuth
+                ? const ProductsOverviewScreen()
+                : const AuthScreen(),
+            routes: {
+              AuthScreen.routeName: (ctx) => const AuthScreen(),
+              ProductDetailScreen.routeName: (ctx) =>
+                  const ProductDetailScreen(),
+              CartScreen.routeName: (ctx) => const CartScreen(),
+              OrdersScreen.routeName: (ctx) => const OrdersScreen(),
+              UserProductScreen.routeName: (ctx) => const UserProductScreen(),
+              EditProductScreen.routeName: (ctx) => const EditProductScreen(),
+            },
+          );
         },
       ),
     );
