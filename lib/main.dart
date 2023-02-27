@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shop_app/helpers/custom_route.dart';
 
 import 'config/colors.dart';
 
@@ -71,6 +72,12 @@ class MyApp extends StatelessWidget {
               colorScheme: ColorScheme.fromSeed(
                 seedColor: AppColor.purple,
                 secondary: AppColor.peach,
+              ),
+              pageTransitionsTheme: PageTransitionsTheme(
+                builders: {
+                  TargetPlatform.android: CustomPageTransitionBuilder(),
+                  TargetPlatform.iOS: CustomPageTransitionBuilder(),
+                },
               ),
             ),
             // home: const ProductsOverviewScreen(),

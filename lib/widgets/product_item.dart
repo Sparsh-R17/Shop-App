@@ -8,15 +8,7 @@ import '../models/product.dart';
 import '../providers/cart_provider.dart';
 
 class ProductItem extends StatelessWidget {
-  // final String id;
-  // final String title;
-  // final String imageUrl;
-  const ProductItem({
-    super.key,
-    // required this.id,
-    // required this.title,
-    // required this.imageUrl,
-  });
+  const ProductItem({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +16,6 @@ class ProductItem extends StatelessWidget {
     final cart = Provider.of<Cart>(context, listen: false);
     final scaffold = ScaffoldMessenger.of(context);
     final authData = Provider.of<Auth>(context, listen: false);
-    // print('Checking whether provider is working or not');
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GestureDetector(
@@ -87,9 +78,15 @@ class ProductItem extends StatelessWidget {
               icon: const Icon(Icons.shopping_cart_outlined),
             ),
           ),
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
+          child: Hero(
+            tag: product.id,
+            child: FadeInImage(
+              placeholder: const AssetImage('images/product-placeholder.png'),
+              fit: BoxFit.cover,
+              image: NetworkImage(
+                product.imageUrl,
+              ),
+            ),
           ),
         ),
       ),

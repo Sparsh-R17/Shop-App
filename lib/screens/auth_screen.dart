@@ -182,9 +182,9 @@ class _AuthCardState extends State<AuthCard>
   }
 
   late AnimationController _controller;
+  late Animation<Offset> _slideAnimation;
   late Animation<Size> _heightAnimation;
   late Animation<double> _opacityAnimation;
-  late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
@@ -192,6 +192,17 @@ class _AuthCardState extends State<AuthCard>
       vsync: this,
       duration: const Duration(
         milliseconds: 300,
+      ),
+    );
+    
+     _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, -1.5),
+      end: const Offset(0, 0),
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.fastOutSlowIn,
+        reverseCurve: Curves.fastLinearToSlowEaseIn,
       ),
     );
 
@@ -209,17 +220,6 @@ class _AuthCardState extends State<AuthCard>
       CurvedAnimation(
         parent: _controller,
         curve: Curves.easeIn,
-      ),
-    );
-
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, -1.5),
-      end: const Offset(0, 0),
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.fastOutSlowIn,
-        reverseCurve: Curves.fastLinearToSlowEaseIn,
       ),
     );
 
