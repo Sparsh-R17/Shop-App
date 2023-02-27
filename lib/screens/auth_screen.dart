@@ -98,7 +98,9 @@ class _AuthCardState extends State<AuthCard> {
               content: Text(message),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                   child: const Text('OK'),
                 ),
               ],
@@ -154,11 +156,13 @@ class _AuthCardState extends State<AuthCard> {
     } catch (error) {
       const errorMessage =
           'Could not authenticate you. Please try again later.';
-      _showErrorDialog(errorMessage);
+      _showErrorDialog(error.toString());
     }
 
     setState(() {
-      _isLoading = false;
+      if (mounted) {
+        _isLoading = false;
+      }
     });
   }
 

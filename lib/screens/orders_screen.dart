@@ -42,7 +42,7 @@ class OrdersScreen extends StatelessWidget {
             if (snapshot.hasError) {
               return const Center(
                 child: Text(
-                  'An Error Occurred',
+                  'No Orders Yet',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                   ),
@@ -50,14 +50,15 @@ class OrdersScreen extends StatelessWidget {
               );
             } else {
               return Consumer<Order>(
-                  builder: (ctx, orderData, child) => ListView.builder(
-                        itemCount: orderData.orders.length,
-                        itemBuilder: (context, index) {
-                          return OrderItem(
-                            order: orderData.orders[index],
-                          );
-                        },
-                      ));
+                builder: (ctx, orderData, child) => ListView.builder(
+                  itemCount: orderData.orders.length,
+                  itemBuilder: (context, index) {
+                    return OrderItem(
+                      order: orderData.orders[index],
+                    );
+                  },
+                ),
+              );
             }
           }
         },

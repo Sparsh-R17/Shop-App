@@ -18,6 +18,7 @@ import './providers/cart_provider.dart';
 import 'providers/auth.dart';
 import 'providers/order_provider.dart';
 import 'screens/auth_screen.dart';
+import 'screens/splash_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,20 +40,22 @@ class MyApp extends StatelessWidget {
           create: (ctx) => Auth(),
         ),
         ChangeNotifierProxyProvider<Auth, ProductProvider>(
-          create: (context) => ProductProvider('', []),
+          create: (context) => ProductProvider('', [], ''),
           update: (context, auth, previousNotifier) => ProductProvider(
-            auth.token!,
+            auth.token ?? '', //to avoid null error
             previousNotifier == null ? [] : previousNotifier.items,
+            auth.userId,
           ),
         ),
         ChangeNotifierProvider(
           create: (ctx) => Cart(),
         ),
         ChangeNotifierProxyProvider<Auth, Order>(
-          create: (context) => Order('', []),
+          create: (context) => Order('', [], ''),
           update: (context, auth, previousNotifier) => Order(
-            auth.token!,
+            auth.token ?? '', //to avoid null error
             previousNotifier == null ? [] : previousNotifier.orders,
+            auth.userId,
             // previousNotifier!.orders,
           ),
         )
@@ -73,7 +76,9 @@ class MyApp extends StatelessWidget {
             // home: const ProductsOverviewScreen(),
             home: authObj.isAuth
                 ? const ProductsOverviewScreen()
-                : const AuthScreen(),
+                : LoginTry(
+                    auth: authObj,
+                  ),
             routes: {
               AuthScreen.routeName: (ctx) => const AuthScreen(),
               ProductDetailScreen.routeName: (ctx) =>
@@ -86,6 +91,25 @@ class MyApp extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class LoginTry extends StatelessWidget {
+  final Auth auth;
+  const LoginTry({super.key, required this.auth});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: auth.tryAutoLogin(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const SplashScreen();
+        } else {
+          return const AuthScreen();
+        }
+      },
     );
   }
 }

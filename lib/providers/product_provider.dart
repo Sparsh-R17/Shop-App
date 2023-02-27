@@ -46,8 +46,9 @@ class ProductProvider with ChangeNotifier {
   // var _showFavorites = false;
 
   final String authToken;
+  final String userId;
 
-  ProductProvider(this.authToken, this._items);
+  ProductProvider(this.authToken, this._items, this.userId);
 
   List<Product> get items {
     // if (_showFavorites) {
@@ -77,16 +78,23 @@ class ProductProvider with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  Future<void> fetAndSetProducts() async {
-    final url = Uri.parse(
-        'https://shop-app-d57ee-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken');
+  Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
+    final filterString =
+        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+
+    var url = Uri.parse(
+        'https://shop-app-d57ee-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken&$filterString');
     try {
       final response = await http.get(url);
-      // print(json.decode(response.body));
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      // ignore: unnecessary_null_comparison
       if (extractedData == null) {
         return;
       }
+      var favUrl = Uri.parse(
+          'https://shop-app-d57ee-default-rtdb.asia-southeast1.firebasedatabase.app/UserFavorites/$userId.json?auth=$authToken');
+      final favResponse = await http.get(favUrl);
+      final favoriteData = json.decode(favResponse.body);
       final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodDetails) {
         loadedProducts.add(
@@ -96,7 +104,8 @@ class ProductProvider with ChangeNotifier {
             description: prodDetails['description'],
             price: prodDetails['price'],
             imageUrl: prodDetails['imageUrl'],
-            isFavorite: prodDetails['isFavorite'],
+            isFavorite:
+                favoriteData == null ? false : favoriteData[prodId] ?? false,
           ),
         );
       });
@@ -121,8 +130,8 @@ class ProductProvider with ChangeNotifier {
             'title': product.title,
             'price': product.price,
             'description': product.description,
-            'isFavorite': product.isFavorite,
             'imageUrl': product.imageUrl,
+            'creatorId': userId,
           },
         ),
       );
